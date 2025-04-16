@@ -13,7 +13,7 @@ def home():
         
         # Run the JobSpy scrape
         jobs_df = scrape_jobs(
-            ssite_name=["linkedin", "indeed", "zip_recruiter", "glassdoor"],
+            ssite_name=["linkedin", "indeed", "google"],
             search_term=job_title,
             location=location,
             results_wanted=500,
