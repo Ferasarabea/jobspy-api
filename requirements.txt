@@ -1,5 +1,6 @@
 Flask==2.3.2
 pandas==2.2.2
-jobspy==1.1.80
+git+https://github.com/speedyapply/JobSpy.git
+
 
 
