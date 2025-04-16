@@ -13,11 +13,11 @@ def home():
         
         # Run the JobSpy scrape
         jobs_df = scrape_jobs(
-            site_name=["linkedin"],
+            ssite_name=["linkedin", "indeed", "zip_recruiter", "glassdoor"],
             search_term=job_title,
             location=location,
-            results_wanted=100,
-            hours_old=72,
+            results_wanted=500,
+            hours_old=336,
             country_indeed='USA'
         )
         jobs = jobs_df.to_dict(orient="records")
