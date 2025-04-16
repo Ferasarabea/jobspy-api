@@ -13,22 +13,35 @@
 
     {% if jobs %}
     <h2>Results:</h2>
-    <table border="1" cellpadding="6">
-        <tr>
-            <th>Title</th>
-            <th>Company</th>
-            <th>Location</th>
-            <th>Link</th>
-        </tr>
-        {% for job in jobs %}
-        <tr>
-            <td>{{ job.title }}</td>
-            <td>{{ job.company }}</td>
-            <td>{{ job.location }}</td>
-            <td><a href="{{ job.job_url }}" target="_blank">View</a></td>
-        </tr>
-        {% endfor %}
-    </table>
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Title</th>
+        <th>Company</th>
+        <th>Location</th>
+        <th>Date Posted</th>
+        <th>Salary</th>
+        <th>Description</th>
+        <th>Link</th>
+    </tr>
+    {% for job in jobs %}
+    <tr>
+        <td>{{ job.title }}</td>
+        <td>{{ job.company }}</td>
+        <td>{{ job.location }}</td>
+        <td>{{ job.date_posted }}</td>
+        <td>
+            {% if job.min_amount and job.max_amount %}
+                {{ job.min_amount }} - {{ job.max_amount }} {{ job.currency or '' }}
+            {% else %}
+                N/A
+            {% endif %}
+        </td>
+        <td style="max-width:600px; white-space:pre-wrap;">{{ job.description }}</td>
+        <td><a href="{{ job.job_url }}" target="_blank">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
     {% endif %}
 </body>
 </html>
