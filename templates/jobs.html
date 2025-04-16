@@ -43,5 +43,34 @@
 </table>
 
     {% endif %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'pt', 'a4');
+
+    // Convert HTML table to plain text
+    let table = document.querySelector("table");
+    if (!table) {
+      alert("No results to export!");
+      return;
+    }
+
+    let rows = [...table.querySelectorAll("tr")].map(row => {
+      return [...row.querySelectorAll("th,td")].map(cell => cell.innerText.trim());
+    });
+
+    let y = 40;
+    doc.setFontSize(10);
+    rows.forEach((row, i) => {
+      row.forEach((cell, j) => {
+        doc.text(cell, 20 + j * 100, y);
+      });
+      y += 20;
+    });
+
+    doc.save("job_listings.pdf");
+  }
+</script>
 </body>
 </html>
