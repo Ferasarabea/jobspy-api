@@ -2,9 +2,11 @@
 <html>
 <head>
     <title>Job Search</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <h1>Search for Jobs</h1>
+
     <form method="POST">
         <input type="text" name="job_title" placeholder="Job title" required>
         <input type="text" name="location" placeholder="Location" required>
@@ -14,65 +16,49 @@
     {% if jobs %}
     <h2>Results:</h2>
 
-    <!-- ✅ Add the Export Button -->
-    <button onclick="downloadPDF()">Download as PDF</button>
+    <!-- ✅ Export to Excel Button -->
+    <button onclick="exportToExcel()">Download as Excel</button>
 
-    <table border="1" cellpadding="6">
-        <tr>
-            <th>Title</th>
-            <th>Company</th>
-            <th>Location</th>
-            <th>Date Posted</th>
-            <th>Salary</th>
-            <th>Description</th>
-            <th>Link</th>
-        </tr>
-        {% for job in jobs %}
-        <tr>
-            <td>{{ job.title }}</td>
-            <td>{{ job.company }}</td>
-            <td>{{ job.location }}</td>
-            <td>{{ job.date_posted }}</td>
-            <td>
-                {% if job.min_amount and job.max_amount %}
-                    {{ job.min_amount }} - {{ job.max_amount }} {{ job.currency or '' }}
-                {% else %}
-                    N/A
-                {% endif %}
-            </td>
-            <td style="max-width:600px; white-space:pre-wrap;">{{ job.description }}</td>
-            <td><a href="{{ job.job_url }}" target="_blank">View</a></td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div id="job-results">
+      <table id="jobTable" border="1" cellpadding="6">
+          <tr>
+              <th>Title</th>
+              <th>Company</th>
+              <th>Location</th>
+              <th>Date Posted</th>
+              <th>Salary</th>
+              <th>Description</th>
+              <th>Link</th>
+          </tr>
+          {% for job in jobs %}
+          <tr>
+              <td>{{ job.title }}</td>
+              <td>{{ job.company }}</td>
+              <td>{{ job.location }}</td>
+              <td>{{ job.date_posted }}</td>
+              <td>
+                  {% if job.min_amount and job.max_amount %}
+                      {{ job.min_amount }} - {{ job.max_amount }} {{ job.currency or '' }}
+                  {% else %}
+                      N/A
+                  {% endif %}
+              </td>
+              <td style="max-width:600px; white-space:pre-wrap;">{{ job.description }}</td>
+              <td><a href="{{ job.job_url }}" target="_blank">View</a></td>
+          </tr>
+          {% endfor %}
+      </table>
+    </div>
     {% endif %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- ✅ Excel Export Script -->
     <script>
-      async function downloadPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l', 'pt', 'a4');
-
-        let table = document.querySelector("table");
-        if (!table) {
-          alert("No results to export!");
-          return;
-        }
-
-        let rows = [...table.querySelectorAll("tr")].map(row => {
-          return [...row.querySelectorAll("th,td")].map(cell => cell.innerText.trim());
-        });
-
-        let y = 40;
-        doc.setFontSize(10);
-        rows.forEach((row, i) => {
-          row.forEach((cell, j) => {
-            doc.text(cell, 20 + j * 100, y);
-          });
-          y += 20;
-        });
-
-        doc.save("job_listings.pdf");
+      function exportToExcel() {
+        var wb = XLSX.utils.book_new();
+        var table = document.getElementById('jobTable');
+        var ws = XLSX.utils.table_to_sheet(table);
+        XLSX.utils.book_append_sheet(wb, ws, 'Job Listings');
+        XLSX.writeFile(wb, 'job_listings.xlsx');
       }
     </script>
 </body>
